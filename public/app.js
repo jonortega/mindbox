@@ -1,6 +1,7 @@
 const taskList = document.getElementById("task-list");
 const taskForm = document.getElementById("task-form");
 const taskInput = document.getElementById("task-input");
+const collapsedTasks = new Set();
 
 taskInput.addEventListener("input", () => {
     autoResizeTextarea(taskInput);
@@ -65,7 +66,10 @@ function renderTasks(tasks, container, parentId = null) {
         const childrenUl = li.querySelector(":scope > ul");
 
         if (childrenUl && childrenUl.children.length > 0) {
-            li.dataset.hasChildren = "true";
+            if (collapsedTasks.has(task.id)) {
+                li.dataset.collapsed = "true";
+                childrenUl.style.display = "none";
+            }
             content.style.cursor = "pointer";
 
             content.addEventListener("click", (e) => {
@@ -73,8 +77,16 @@ function renderTasks(tasks, container, parentId = null) {
                 if (e.target.closest(".delete")) return;
 
                 const collapsed = li.dataset.collapsed === "true";
-                li.dataset.collapsed = (!collapsed).toString();
-                childrenUl.style.display = collapsed ? "block" : "none";
+                const newState = !collapsed;
+
+                li.dataset.collapsed = newState.toString();
+                childrenUl.style.display = newState ? "none" : "block";
+
+                if (newState) {
+                    collapsedTasks.add(task.id);
+                } else {
+                    collapsedTasks.delete(task.id);
+                }
             });
         } else {
             li.dataset.hasChildren = "false";
@@ -94,11 +106,14 @@ function makeSortable(ul) {
 
         onUpdate: async () => {
             await persistOrder(ul);
+            fetchTasks();
         },
 
         onAdd: async (evt) => {
             await persistOrder(evt.to);
+            fetchTasks();
         }
+
     });
 }
 

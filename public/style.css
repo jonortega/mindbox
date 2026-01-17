@@ -76,33 +76,47 @@ li {
   margin-bottom: 6px;
 }
 
-li[data-has-children="true"][data-collapsed="false"] > .task::before {
-  content: "▾";
-  color: var(--muted);
-  margin-right: 6px;
-}
-
-li[data-has-children="true"][data-collapsed="true"] > .task::before {
-  content: "▸";
-  color: var(--muted);
-  margin-right: 6px;
-}
-
 .task {
+  position: relative;
   display: flex;
   align-items: flex-start;
-  justify-content: space-between;
+  gap: 12px;
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 6px;
   padding: 8px 10px;
-  gap: 12px;
 }
 
-.task::before {
+/* Collapse indicator (ONLY when has children) */
+li[data-has-children="true"] > .task::before {
+  content: "▾";
+  color: var(--muted);
+  font-size: 12px;
   width: 12px;
-  display: inline-block;
   text-align: center;
+  flex-shrink: 0;
+}
+
+li[data-has-children="true"][data-collapsed="true"] > .task::before {
+  content: "▸";
+}
+
+/* Text */
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.title {
+  font-size: 15px;
+}
+
+.description {
+  font-size: 14px;
+  color: var(--muted);
+  white-space: pre-wrap;
 }
 
 /* Delete */
@@ -116,22 +130,4 @@ li[data-has-children="true"][data-collapsed="true"] > .task::before {
 
 .delete:hover {
   color: #c00;
-}
-
-.text {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  flex: 1;
-}
-
-.title {
-  font-size: 15px;
-  cursor: default;
-}
-
-.description {
-  font-size: 14px;
-  color: var(--muted);
-  white-space: pre-wrap;
 }
