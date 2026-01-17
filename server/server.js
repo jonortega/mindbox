@@ -9,6 +9,22 @@ const PORT = 3000;
 const dbPath = path.join(__dirname, "db.sqlite");
 const db = new Database(dbPath);
 
+function getDescendantIds(taskId) {
+    const children = db
+        .prepare("SELECT id FROM tasks WHERE parent_id = ?")
+        .all(taskId);
+
+    let ids = [];
+
+    for (const child of children) {
+        ids.push(child.id);
+        ids = ids.concat(getDescendantIds(child.id));
+    }
+
+    return ids;
+}
+
+
 // Crear tabla si no existe
 db.prepare(`
   CREATE TABLE IF NOT EXISTS tasks (
@@ -71,10 +87,21 @@ app.post("/tasks", (req, res) => {
 app.delete("/tasks/:id", (req, res) => {
     const id = Number(req.params.id);
 
-    db.prepare("DELETE FROM tasks WHERE id = ?").run(id);
+    const idsToDelete = [id, ...getDescendantIds(id)];
+
+    const stmt = db.prepare("DELETE FROM tasks WHERE id = ?");
+
+    const tx = db.transaction(() => {
+        for (const taskId of idsToDelete) {
+            stmt.run(taskId);
+        }
+    });
+
+    tx();
 
     res.status(204).end();
 });
+
 
 // POST /tasks/reorder
 app.post("/tasks/reorder", (req, res) => {
