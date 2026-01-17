@@ -86,9 +86,11 @@ li {
   gap: 10px;
 }
 
-.task span {
-  flex: 1;
-  line-height: 1.4;
+.task {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
 }
 
 /* Delete */
@@ -102,4 +104,21 @@ li {
 
 .delete:hover {
   color: #c00;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.title {
+  font-size: 15px;
+}
+
+.description {
+  font-size: 14px;
+  color: var(--muted);
+  white-space: pre-wrap;
 }

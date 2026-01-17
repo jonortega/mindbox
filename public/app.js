@@ -28,15 +28,28 @@ function renderTasks(tasks, container, parentId = null) {
         const content = document.createElement("div");
         content.className = "task";
 
+        const text = document.createElement("div");
+        text.className = "text";
+
         const title = document.createElement("span");
+        title.className = "title";
         title.textContent = task.title;
+
+        text.appendChild(title);
+
+        if (task.description) {
+            const desc = document.createElement("div");
+            desc.className = "description";
+            desc.textContent = task.description;
+            text.appendChild(desc);
+        }
 
         const delBtn = document.createElement("button");
         delBtn.textContent = "✕";
         delBtn.className = "delete";
         delBtn.onclick = () => deleteTask(task.id);
 
-        content.appendChild(title);
+        content.appendChild(text);
         content.appendChild(delBtn);
         li.appendChild(content);
 
@@ -47,7 +60,6 @@ function renderTasks(tasks, container, parentId = null) {
     });
 
     container.appendChild(ul);
-
     makeSortable(ul);
 }
 
@@ -100,13 +112,21 @@ async function fetchTasks() {
 taskForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const title = taskInput.value.trim();
-    if (!title) return;
+    const raw = taskInput.value.trim();
+    if (!raw) return;
+
+    const lines = raw.split("\n");
+    const title = lines[0];
+    const description =
+        lines.length > 1
+            ? lines.slice(1).join("\n").trim()
+            : null;
+
 
     await fetch("/tasks", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title })
+        body: JSON.stringify({ title, description })
     });
 
     taskInput.value = "";
