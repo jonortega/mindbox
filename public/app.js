@@ -2,6 +2,10 @@ const taskList = document.getElementById("task-list");
 const taskForm = document.getElementById("task-form");
 const taskInput = document.getElementById("task-input");
 
+taskInput.addEventListener("input", () => {
+    autoResizeTextarea(taskInput);
+});
+
 // Cargar tareas al iniciar
 fetchTasks();
 
@@ -130,6 +134,7 @@ taskForm.addEventListener("submit", async (e) => {
     });
 
     taskInput.value = "";
+    taskInput.style.height = "auto";
     taskInput.focus();
     fetchTasks();
 });
@@ -149,5 +154,10 @@ taskInput.addEventListener("keydown", (e) => {
         taskForm.requestSubmit();
     }
 });
+
+function autoResizeTextarea(el) {
+    el.style.height = "auto";
+    el.style.height = el.scrollHeight + "px";
+}
 
 taskInput.focus();
