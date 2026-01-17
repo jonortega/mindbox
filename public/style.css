@@ -76,22 +76,33 @@ li {
   margin-bottom: 6px;
 }
 
-.task {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 8px 10px;
-  gap: 10px;
+li[data-has-children="true"][data-collapsed="false"] > .task::before {
+  content: "▾";
+  color: var(--muted);
+  margin-right: 6px;
+}
+
+li[data-has-children="true"][data-collapsed="true"] > .task::before {
+  content: "▸";
+  color: var(--muted);
+  margin-right: 6px;
 }
 
 .task {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 10px;
   gap: 12px;
+}
+
+.task::before {
+  width: 12px;
+  display: inline-block;
+  text-align: center;
 }
 
 /* Delete */
@@ -116,6 +127,7 @@ li {
 
 .title {
   font-size: 15px;
+  cursor: default;
 }
 
 .description {

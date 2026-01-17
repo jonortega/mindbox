@@ -28,6 +28,7 @@ function renderTasks(tasks, container, parentId = null) {
     tasks.forEach(task => {
         const li = document.createElement("li");
         li.dataset.id = task.id;
+        li.dataset.collapsed = "false";
 
         const content = document.createElement("div");
         content.className = "task";
@@ -57,8 +58,27 @@ function renderTasks(tasks, container, parentId = null) {
         content.appendChild(delBtn);
         li.appendChild(content);
 
-        // Render hijos
+        // Render hijos (esto CREA el <ul> hijo)
         renderTasks(task.children, li, task.id);
+
+        // Ahora sí: comprobar si hay hijos reales
+        const childrenUl = li.querySelector(":scope > ul");
+
+        if (childrenUl && childrenUl.children.length > 0) {
+            li.dataset.hasChildren = "true";
+            content.style.cursor = "pointer";
+
+            content.addEventListener("click", (e) => {
+                // Evitar colapsar al pulsar el botón de borrar
+                if (e.target.closest(".delete")) return;
+
+                const collapsed = li.dataset.collapsed === "true";
+                li.dataset.collapsed = (!collapsed).toString();
+                childrenUl.style.display = collapsed ? "block" : "none";
+            });
+        } else {
+            li.dataset.hasChildren = "false";
+        }
 
         ul.appendChild(li);
     });
