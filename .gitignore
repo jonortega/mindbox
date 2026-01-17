@@ -1,0 +1,26 @@
+# Node / JS
+node_modules/
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# SQLite
+server/db.sqlite
+server/*.sqlite
+server/*.sqlite3
+
+# Environment / OS
+.env
+.env.*
+.DS_Store
+Thumbs.db
+
+# Editor / IDE
+.vscode/
+.idea/
+
+# Build / cache (por si acaso)
+dist/
+build/
+.cache/
